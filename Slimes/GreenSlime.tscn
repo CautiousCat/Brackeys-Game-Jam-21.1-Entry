@@ -1,0 +1,98 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://Slimes/SlimeDetector.gd" type="Script" id=1]
+[ext_resource path="res://Slimes/GreenSlime.png" type="Texture" id=2]
+[ext_resource path="res://Slimes/TowerMarkDetector.gd" type="Script" id=3]
+[ext_resource path="res://Slimes/Drag.gd" type="Script" id=4]
+[ext_resource path="res://Slimes/Slime.gd" type="Script" id=5]
+[ext_resource path="res://Slimes/GreenSlimeBullet.png" type="Texture" id=6]
+
+[sub_resource type="CircleShape2D" id=5]
+radius = 48.2402
+
+[sub_resource type="CircleShape2D" id=1]
+radius = 7.99823
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 13.9952
+
+[sub_resource type="CircleShape2D" id=3]
+
+[sub_resource type="CircleShape2D" id=4]
+radius = 8.24461
+
+[node name="GreenSlime" type="KinematicBody2D" groups=[
+"slime",
+]]
+collision_layer = 8
+collision_mask = 2147483652
+script = ExtResource( 5 )
+
+[node name="Sprite" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+
+[node name="StateTimer" type="Timer" parent="."]
+process_mode = 0
+
+[node name="FireTimer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="Overlaps" type="Node2D" parent="."]
+
+[node name="EnemyDetector" type="Area2D" parent="Overlaps"]
+visible = false
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Overlaps/EnemyDetector"]
+shape = SubResource( 5 )
+
+[node name="DragArea" type="Area2D" parent="Overlaps"]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Overlaps/DragArea"]
+shape = SubResource( 1 )
+
+[node name="SlimeDetector" type="Area2D" parent="Overlaps"]
+collision_layer = 2147483648
+collision_mask = 16
+script = ExtResource( 1 )
+groupName = "green_slime"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Overlaps/SlimeDetector"]
+shape = SubResource( 2 )
+
+[node name="CombineCollision" type="Area2D" parent="Overlaps" groups=[
+"green_slime",
+]]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Overlaps/CombineCollision"]
+shape = SubResource( 3 )
+
+[node name="TowerMarkDetector" type="Area2D" parent="Overlaps"]
+monitorable = false
+collision_layer = 0
+collision_mask = 32
+script = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Overlaps/TowerMarkDetector"]
+shape = SubResource( 4 )
+
+[node name="Position2D" type="Position2D" parent="."]
+visible = false
+position = Vector2( 0.045, 0 )
+
+[node name="Position2D" type="Position2D" parent="Position2D"]
+position = Vector2( 15.363, 0 )
+
+[node name="Gun" type="Sprite" parent="Position2D/Position2D"]
+texture = ExtResource( 6 )
+[connection signal="timeout" from="StateTimer" to="." method="_on_StateTimer_timeout"]
+[connection signal="timeout" from="FireTimer" to="." method="_on_FireTimer_timeout"]
+[connection signal="area_entered" from="Overlaps/EnemyDetector" to="." method="_on_EnemyDetector_area_entered"]
+[connection signal="area_exited" from="Overlaps/EnemyDetector" to="." method="_on_EnemyDetector_area_exited"]
+[connection signal="input_event" from="Overlaps/DragArea" to="Overlaps/DragArea" method="_on_DragArea_input_event"]

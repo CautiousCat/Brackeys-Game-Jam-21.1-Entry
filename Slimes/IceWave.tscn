@@ -1,0 +1,33 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Slimes/IceWave2.png" type="Texture" id=1]
+[ext_resource path="res://Slimes/IceWave3.png" type="Texture" id=2]
+[ext_resource path="res://Slimes/IceWave4.png" type="Texture" id=3]
+[ext_resource path="res://Slimes/IceWave1.png" type="Texture" id=4]
+[ext_resource path="res://Slimes/IceWave.gd" type="Script" id=5]
+
+[sub_resource type="CircleShape2D" id=2]
+radius = 27.4974
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 4 ), ExtResource( 1 ), ExtResource( 2 ), ExtResource( 3 ) ],
+"loop": false,
+"name": "Wave",
+"speed": 10.0
+} ]
+
+[node name="IceWave" type="Area2D" groups=[
+"ice_wave",
+]]
+collision_layer = 64
+collision_mask = 2147483648
+script = ExtResource( 5 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 2 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )
+animation = "Wave"
+[connection signal="animation_finished" from="AnimatedSprite" to="." method="_on_AnimatedSprite_animation_finished"]
